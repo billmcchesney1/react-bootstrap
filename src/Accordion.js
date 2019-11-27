@@ -50,7 +50,7 @@ const Accordion = React.forwardRef((props, ref) => {
         <Component
           ref={ref}
           {...controlledProps}
-          className={classNames(className, bsPrefix, 'test')}
+          className={classNames(className, bsPrefix)}
         >
           {children}
         </Component>
