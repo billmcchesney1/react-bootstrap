@@ -1,8 +1,7 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const DEVICE_SIZES = ['xl', 'lg', 'md', 'sm', 'xs'];
 const colSize = PropTypes.oneOfType([
@@ -31,6 +30,11 @@ const propTypes = {
    * @default 'col'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   as: PropTypes.elementType,
 
@@ -72,8 +76,12 @@ const propTypes = {
 
 const Col = React.forwardRef(
   // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  ({ bsPrefix, className, as: Component = 'div', ...props }, ref) => {
+  (
+    { bsPrefix, classNameMap, className, as: Component = 'div', ...props },
+    ref,
+  ) => {
     const prefix = useBootstrapPrefix(bsPrefix, 'col');
+    const classNames = useClassNameMapper(classNameMap);
     const spans = [];
     const classes = [];
 

@@ -1,12 +1,16 @@
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import React from 'react';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /** @default 'badge' */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * The visual style of the badge
@@ -31,10 +35,19 @@ const defaultProps = {
 
 const Badge = React.forwardRef(
   (
-    { bsPrefix, variant, pill, className, as: Component = 'span', ...props },
+    {
+      bsPrefix,
+      classNameMap,
+      variant,
+      pill,
+      className,
+      as: Component = 'span',
+      ...props
+    },
     ref,
   ) => {
     const prefix = useBootstrapPrefix(bsPrefix, 'badge');
+    const classNames = useClassNameMapper(classNameMap);
     return (
       <Component
         ref={ref}

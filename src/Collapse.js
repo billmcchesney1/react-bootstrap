@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import css from 'dom-helpers/css';
 import transitionEnd from 'dom-helpers/transitionEnd';
 import PropTypes from 'prop-types';
@@ -11,6 +10,7 @@ import Transition, {
 } from 'react-transition-group/Transition';
 import createChainedFunction from './createChainedFunction';
 import triggerBrowserReflow from './triggerBrowserReflow';
+import { ThemeConsumer } from './ThemeProvider';
 
 const MARGINS = {
   height: ['marginTop', 'marginBottom'],
@@ -57,6 +57,11 @@ const propTypes = {
    * shown
    */
   appear: PropTypes.bool,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Duration of the collapse animation in milliseconds, to ensure that
@@ -173,6 +178,7 @@ class Collapse extends React.Component {
 
   render() {
     const {
+      classNameMap,
       onEnter,
       onEntering,
       onEntered,
@@ -196,28 +202,35 @@ class Collapse extends React.Component {
     const handleExiting = createChainedFunction(this.handleExiting, onExiting);
 
     return (
-      <Transition
-        addEndListener={transitionEnd}
-        {...props}
-        aria-expanded={props.role ? props.in : null}
-        onEnter={handleEnter}
-        onEntering={handleEntering}
-        onEntered={handleEntered}
-        onExit={handleExit}
-        onExiting={handleExiting}
-      >
-        {(state, innerProps) =>
-          React.cloneElement(children, {
-            ...innerProps,
-            className: classNames(
-              className,
-              children.props.className,
-              collapseStyles[state],
-              this.getDimension() === 'width' && 'width',
-            ),
-          })
-        }
-      </Transition>
+      <ThemeConsumer>
+        {({ createClassNameMapper }) => {
+          const classNames = createClassNameMapper(classNameMap);
+          return (
+            <Transition
+              addEndListener={transitionEnd}
+              {...props}
+              aria-expanded={props.role ? props.in : null}
+              onEnter={handleEnter}
+              onEntering={handleEntering}
+              onEntered={handleEntered}
+              onExit={handleExit}
+              onExiting={handleExiting}
+            >
+              {(state, innerProps) =>
+                React.cloneElement(children, {
+                  ...innerProps,
+                  className: classNames(
+                    className,
+                    children.props.className,
+                    collapseStyles[state],
+                    this.getDimension() === 'width' && 'width',
+                  ),
+                })
+              }
+            </Transition>
+          );
+        }}
+      </ThemeConsumer>
     );
   }
 }

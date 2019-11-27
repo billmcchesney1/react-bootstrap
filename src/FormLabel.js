@@ -1,17 +1,21 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import warning from 'warning';
 
 import Col from './Col';
 import FormContext from './FormContext';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'form-label'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Uses `controlId` from `<FormGroup>` if not explicitly specified.
@@ -47,10 +51,14 @@ const defaultProps = {
 };
 
 const FormLabel = React.forwardRef(
-  ({ bsPrefix, column, srOnly, className, htmlFor, ...props }, ref) => {
+  (
+    { bsPrefix, classNameMap, column, srOnly, className, htmlFor, ...props },
+    ref,
+  ) => {
     const { controlId } = useContext(FormContext);
 
     bsPrefix = useBootstrapPrefix(bsPrefix, 'form-label');
+    const classNames = useClassNameMapper(classNameMap);
 
     const classes = classNames(
       className,

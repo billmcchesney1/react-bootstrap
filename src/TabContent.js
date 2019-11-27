@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'tab-content'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   as: PropTypes.elementType,
 };
@@ -17,6 +21,7 @@ const TabContent = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
       as: Component = 'div',
       className,
@@ -25,6 +30,7 @@ const TabContent = React.forwardRef(
     ref,
   ) => {
     const decoratedBsPrefix = useBootstrapPrefix(bsPrefix, 'tab-content');
+    const classNames = useClassNameMapper(classNameMap);
     return (
       <Component
         ref={ref}

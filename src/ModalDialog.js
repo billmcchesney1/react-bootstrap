@@ -1,12 +1,16 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /** @default 'modal' */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Render a large, extra large or small modal.
@@ -28,10 +32,20 @@ const propTypes = {
 
 const ModalDialog = React.forwardRef(
   (
-    { bsPrefix, className, centered, size, children, scrollable, ...props },
+    {
+      bsPrefix,
+      classNameMap,
+      className,
+      centered,
+      size,
+      children,
+      scrollable,
+      ...props
+    },
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'modal');
+    const classNames = useClassNameMapper(classNameMap);
     const dialogClass = `${bsPrefix}-dialog`;
 
     return (
@@ -46,7 +60,7 @@ const ModalDialog = React.forwardRef(
           scrollable && `${dialogClass}-scrollable`,
         )}
       >
-        <div className={`${bsPrefix}-content`}>{children}</div>
+        <div className={classNames(`${bsPrefix}-content`)}>{children}</div>
       </div>
     );
   },

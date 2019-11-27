@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'btn-group'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Sets the size for all Buttons in the group.
@@ -46,6 +50,7 @@ const defaultProps = {
 const ButtonGroup = React.forwardRef((props, ref) => {
   const {
     bsPrefix,
+    classNameMap,
     size,
     toggle,
     vertical,
@@ -56,6 +61,7 @@ const ButtonGroup = React.forwardRef((props, ref) => {
   } = props;
 
   const prefix = useBootstrapPrefix(bsPrefix, 'btn-group');
+  const classNames = useClassNameMapper(classNameMap);
   let baseClass = prefix;
 
   if (vertical) baseClass = `${prefix}-vertical`;

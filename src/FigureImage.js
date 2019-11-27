@@ -1,6 +1,6 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useClassNameMapper } from './ThemeProvider';
 
 import Image from './Image';
 
@@ -9,6 +9,11 @@ const propTypes = {
    * @default 'img'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Sets image as fluid image.
@@ -33,9 +38,15 @@ const propTypes = {
 
 const defaultProps = { fluid: true };
 
-const FigureImage = React.forwardRef(({ className, ...props }, ref) => (
-  <Image ref={ref} {...props} className={classNames(className, 'figure-img')} />
-));
+const FigureImage = React.forwardRef(
+  ({ classNameMap, className, ...props }, ref) => (
+    <Image
+      ref={ref}
+      {...props}
+      className={useClassNameMapper(classNameMap)(className, 'figure-img')}
+    />
+  ),
+);
 
 FigureImage.displayName = 'FigureImage';
 FigureImage.propTypes = propTypes;

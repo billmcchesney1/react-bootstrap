@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useEventCallback from '@restart/hooks/useEventCallback';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import CloseButton from './CloseButton';
 import ModalContext from './ModalContext';
 
 const propTypes = {
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Provides an accessible label for the close
@@ -39,6 +43,7 @@ const ModalHeader = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       closeLabel,
       closeButton,
       onHide,
@@ -49,6 +54,7 @@ const ModalHeader = React.forwardRef(
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'modal-header');
+    const classNames = useClassNameMapper(classNameMap);
 
     const context = useContext(ModalContext);
 

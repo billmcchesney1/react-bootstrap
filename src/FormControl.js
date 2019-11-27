@@ -1,16 +1,20 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import warning from 'warning';
 import Feedback from './Feedback';
 import FormContext from './FormContext';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default {'form-control'}
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * The FormControl `ref` will be forwarded to the underlying input element,
@@ -77,6 +81,7 @@ const FormControl = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       type,
       size,
       id,
@@ -94,6 +99,7 @@ const FormControl = React.forwardRef(
     const { controlId } = useContext(FormContext);
 
     bsPrefix = useBootstrapPrefix(bsPrefix, 'form-control');
+    const classNames = useClassNameMapper(classNameMap);
     let classes;
     if (plaintext) {
       classes = { [`${bsPrefix}-plaintext`]: true };

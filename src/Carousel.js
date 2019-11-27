@@ -8,7 +8,7 @@ import CarouselCaption from './CarouselCaption';
 import CarouselItem from './CarouselItem';
 import { forEach, map } from './ElementChildren';
 import SafeAnchor from './SafeAnchor';
-import { createBootstrapComponent } from './ThemeProvider';
+import { createBootstrapComponent, ThemeConsumer } from './ThemeProvider';
 import triggerBrowserReflow from './triggerBrowserReflow';
 
 const countChildren = c =>
@@ -23,6 +23,12 @@ const propTypes = {
    * @default 'carousel'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
+
   as: PropTypes.elementType,
 
   /**
@@ -118,10 +124,10 @@ const defaultProps = {
   controls: true,
   activeIndex: 0,
 
-  prevIcon: <span aria-hidden="true" className="carousel-control-prev-icon" />,
+  prevIcon: null,
   prevLabel: 'Previous',
 
-  nextIcon: <span aria-hidden="true" className="carousel-control-next-icon" />,
+  nextIcon: null,
   nextLabel: 'Next',
   touch: true,
 };
@@ -386,7 +392,7 @@ class Carousel extends React.Component {
     }, 50);
   }
 
-  renderControls(properties) {
+  renderControls(properties, classNamesMapper) {
     const { bsPrefix } = this.props;
     const {
       wrap,
@@ -404,28 +410,32 @@ class Carousel extends React.Component {
       (wrap || activeIndex !== 0) && (
         <SafeAnchor
           key="prev"
-          className={`${bsPrefix}-control-prev`}
+          className={classNamesMapper(`${bsPrefix}-control-prev`)}
           onClick={this.handlePrev}
         >
           {prevIcon}
-          {prevLabel && <span className="sr-only">{prevLabel}</span>}
+          {prevLabel && (
+            <span className={classNamesMapper('sr-only')}>{prevLabel}</span>
+          )}
         </SafeAnchor>
       ),
 
       (wrap || activeIndex !== count - 1) && (
         <SafeAnchor
           key="next"
-          className={`${bsPrefix}-control-next`}
+          className={classNamesMapper(`${bsPrefix}-control-next`)}
           onClick={this.handleNext}
         >
           {nextIcon}
-          {nextLabel && <span className="sr-only">{nextLabel}</span>}
+          {nextLabel && (
+            <span className={classNamesMapper('sr-only')}>{nextLabel}</span>
+          )}
         </SafeAnchor>
       ),
     ];
   }
 
-  renderIndicators(children, activeIndex) {
+  renderIndicators(children, activeIndex, classNamesMapper) {
     const { bsPrefix } = this.props;
     let indicators = [];
 
@@ -433,7 +443,10 @@ class Carousel extends React.Component {
       indicators.push(
         <li
           key={index}
-          className={index === activeIndex ? 'active' : null}
+          className={classNamesMapper(
+            index === activeIndex ? 'active' : null,
+            'li',
+          )}
           onClick={e => this.to(index, e)}
         />,
 
@@ -443,7 +456,11 @@ class Carousel extends React.Component {
       );
     });
 
-    return <ol className={`${bsPrefix}-indicators`}>{indicators}</ol>;
+    return (
+      <ol className={classNamesMapper(`${bsPrefix}-indicators`)}>
+        {indicators}
+      </ol>
+    );
   }
 
   render() {
@@ -451,6 +468,7 @@ class Carousel extends React.Component {
       // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
       as: Component = 'div',
       bsPrefix,
+      classNameMap,
       slide,
       fade,
       indicators,
@@ -480,49 +498,77 @@ class Carousel extends React.Component {
     } = this.state;
 
     return (
-      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-      <Component
-        onTouchStart={touch ? this.handleTouchStart : undefined}
-        onTouchEnd={touch ? this.handleTouchEnd : undefined}
-        {...props}
-        className={classNames(
-          className,
-          bsPrefix,
-          slide && 'slide',
-          fade && `${bsPrefix}-fade`,
-        )}
-        onKeyDown={keyboard ? this.handleKeyDown : undefined}
-        onMouseOver={this.handleMouseOver}
-        onMouseOut={this.handleMouseOut}
-      >
-        {indicators && this.renderIndicators(children, activeIndex)}
+      <ThemeConsumer>
+        {({ createClassNameMapper }) => {
+          const classNamesMapper = createClassNameMapper(classNameMap);
+          const prevIconComponent = prevIcon || (
+            <span
+              aria-hidden="true"
+              className={classNamesMapper('carousel-control-prev-icon', 'span')}
+            />
+          );
 
-        <div className={`${bsPrefix}-inner`} ref={this.carousel}>
-          {map(children, (child, index) => {
-            const current = index === activeIndex;
-            const previous = index === previousActiveIndex;
+          const nextIconComponent = nextIcon || (
+            <span
+              aria-hidden="true"
+              className={classNamesMapper('carousel-control-next-icon', 'span')}
+            />
+          );
 
-            return cloneElement(child, {
-              className: classNames(
-                child.props.className,
-                current && currentClasses,
-                previous && prevClasses,
-              ),
-            });
-          })}
-        </div>
+          return (
+            // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+            <Component
+              onTouchStart={touch ? this.handleTouchStart : undefined}
+              onTouchEnd={touch ? this.handleTouchEnd : undefined}
+              {...props}
+              className={classNamesMapper(
+                className,
+                bsPrefix,
+                slide && 'slide',
+                fade && `${bsPrefix}-fade`,
+              )}
+              onKeyDown={keyboard ? this.handleKeyDown : undefined}
+              onMouseOver={this.handleMouseOver}
+              onMouseOut={this.handleMouseOut}
+            >
+              {indicators &&
+                this.renderIndicators(children, activeIndex, classNamesMapper)}
 
-        {controls &&
-          this.renderControls({
-            wrap,
-            children,
-            activeIndex,
-            prevIcon,
-            prevLabel,
-            nextIcon,
-            nextLabel,
-          })}
-      </Component>
+              <div
+                className={classNamesMapper(`${bsPrefix}-inner`, 'div')}
+                ref={this.carousel}
+              >
+                {map(children, (child, index) => {
+                  const current = index === activeIndex;
+                  const previous = index === previousActiveIndex;
+
+                  return cloneElement(child, {
+                    className: classNamesMapper(
+                      child.props.className,
+                      current && currentClasses,
+                      previous && prevClasses,
+                    ),
+                  });
+                })}
+              </div>
+
+              {controls &&
+                this.renderControls(
+                  {
+                    wrap,
+                    children,
+                    activeIndex,
+                    prevIcon: prevIconComponent,
+                    prevLabel,
+                    nextIcon: nextIconComponent,
+                    nextLabel,
+                  },
+                  classNamesMapper,
+                )}
+            </Component>
+          );
+        }}
+      </ThemeConsumer>
     );
   }
 }

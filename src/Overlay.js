@@ -1,9 +1,9 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import BaseOverlay from 'react-overlays/Overlay';
 import { componentOrElement, elementType } from 'prop-types-extra';
+import { useClassNameMapper } from './ThemeProvider';
 
 import Fade from './Fade';
 
@@ -13,6 +13,11 @@ const propTypes = {
    * The `container` element will have the Overlay appended to it via a React portal.
    */
   container: PropTypes.oneOfType([componentOrElement, PropTypes.func]),
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * A component instance, DOM node, or function that returns either.
@@ -120,8 +125,15 @@ function wrapRefs(props, arrowProps) {
     aRef.__wrapped || (aRef.__wrapped = r => aRef(findDOMNode(r)));
 }
 
-function Overlay({ children: overlay, transition, ...outerProps }) {
+function Overlay({
+  classNameMap,
+  children: overlay,
+  transition,
+  ...outerProps
+}) {
   transition = transition === true ? Fade : transition || null;
+
+  const classNames = useClassNameMapper(classNameMap);
 
   return (
     <BaseOverlay {...outerProps} transition={transition}>

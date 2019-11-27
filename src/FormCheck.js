@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import all from 'prop-types-extra/lib/all';
 import React, { useContext, useMemo } from 'react';
@@ -6,13 +5,18 @@ import Feedback from './Feedback';
 import FormCheckInput from './FormCheckInput';
 import FormCheckLabel from './FormCheckLabel';
 import FormContext from './FormContext';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'form-check'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * A seperate bsPrefix used for custom controls
@@ -98,6 +102,7 @@ const FormCheck = React.forwardRef(
       id,
       bsPrefix,
       bsCustomPrefix,
+      classNameMap,
       inline,
       disabled,
       isValid,
@@ -122,6 +127,7 @@ const FormCheck = React.forwardRef(
       ? useBootstrapPrefix(bsCustomPrefix, 'custom-control')
       : useBootstrapPrefix(bsPrefix, 'form-check');
 
+    const classNames = useClassNameMapper(classNameMap);
     const { controlId } = useContext(FormContext);
     const innerFormContext = useMemo(
       () => ({

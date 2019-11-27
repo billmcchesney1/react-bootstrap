@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import FormContext from './FormContext';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'form-check-input'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * A seperate bsPrefix used for custom controls
@@ -53,6 +57,7 @@ const FormCheckInput = React.forwardRef(
       id,
       bsPrefix,
       bsCustomPrefix,
+      classNameMap,
       className,
       isValid,
       isInvalid,
@@ -67,6 +72,7 @@ const FormCheckInput = React.forwardRef(
     bsPrefix = custom
       ? useBootstrapPrefix(bsCustomPrefix, 'custom-control-input')
       : useBootstrapPrefix(bsPrefix, 'form-check-input');
+    const classNames = useClassNameMapper(classNameMap);
 
     return (
       <Component

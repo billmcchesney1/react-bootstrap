@@ -1,15 +1,19 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 import FormContext from './FormContext';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'form-group'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   as: PropTypes.elementType,
 
@@ -36,6 +40,7 @@ const FormGroup = React.forwardRef(
       className,
       children,
       controlId,
+      classNameMap,
       // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
       as: Component = 'div',
       ...props
@@ -43,6 +48,7 @@ const FormGroup = React.forwardRef(
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'form-group');
+    const classNames = useClassNameMapper(classNameMap);
     const context = useMemo(() => ({ controlId }), [controlId]);
 
     return (

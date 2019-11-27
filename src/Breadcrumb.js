@@ -1,8 +1,7 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import BreadcrumbItem from './BreadcrumbItem';
 
 const propTypes = {
@@ -10,6 +9,10 @@ const propTypes = {
    * @default 'breadcrumb'
    */
   bsPrefix: PropTypes.string,
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
   /**
    * ARIA label for the nav element
    * https://www.w3.org/TR/wai-aria-practices/#breadcrumb
@@ -33,6 +36,7 @@ const Breadcrumb = React.forwardRef(
     {
       bsPrefix,
       className,
+      classNameMap,
       listProps,
       children,
       label,
@@ -43,9 +47,15 @@ const Breadcrumb = React.forwardRef(
     ref,
   ) => {
     const prefix = useBootstrapPrefix(bsPrefix, 'breadcrumb');
+    const classNames = useClassNameMapper(classNameMap);
 
     return (
-      <Component aria-label={label} className={className} ref={ref} {...props}>
+      <Component
+        aria-label={label}
+        className={classNames(className)}
+        ref={ref}
+        {...props}
+      >
         <ol {...listProps} className={classNames(prefix, listProps.className)}>
           {children}
         </ol>

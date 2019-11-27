@@ -1,9 +1,9 @@
 /* eslint-disable react/no-multi-comp */
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import SafeAnchor from './SafeAnchor';
+import { useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /** Disables the PageItem */
@@ -14,6 +14,11 @@ const propTypes = {
 
   /** An accessible label indicating the active state.. */
   activeLabel: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 };
 
 const defaultProps = {
@@ -24,20 +29,34 @@ const defaultProps = {
 
 const PageItem = React.forwardRef(
   (
-    { active, disabled, className, style, activeLabel, children, ...props },
+    {
+      active,
+      disabled,
+      className,
+      classNameMap,
+      style,
+      activeLabel,
+      children,
+      ...props
+    },
     ref,
   ) => {
     const Component = active || disabled ? 'span' : SafeAnchor;
+    const classNames = useClassNameMapper(classNameMap);
     return (
       <li
         ref={ref}
         style={style}
         className={classNames(className, 'page-item', { active, disabled })}
       >
-        <Component className="page-link" disabled={disabled} {...props}>
+        <Component
+          className={classNames('page-link')}
+          disabled={disabled}
+          {...props}
+        >
           {children}
           {active && activeLabel && (
-            <span className="sr-only">{activeLabel}</span>
+            <span className={classNames('sr-only')}>{activeLabel}</span>
           )}
         </Component>
       </li>
@@ -52,20 +71,24 @@ PageItem.displayName = 'PageItem';
 export default PageItem;
 
 function createButton(name, defaultValue, label = name) {
-  return class extends React.Component {
-    static displayName = name;
+  const Button = ({ classNameMap, children, ...props }) => (
+    <PageItem {...props}>
+      <span aria-hidden="true">{children || defaultValue}</span>
+      <span className={useClassNameMapper(classNameMap)('sr-only')}>
+        {label}
+      </span>
+    </PageItem>
+  );
 
-    render() {
-      const { children, ...props } = this.props;
-      delete props.active;
-      return (
-        <PageItem {...props}>
-          <span aria-hidden="true">{children || defaultValue}</span>
-          <span className="sr-only">{label}</span>
-        </PageItem>
-      );
-    }
+  Button.displayName = name;
+  Button.propTypes = {
+    /**
+     * ClassName mapping
+     */
+    classNameMap: PropTypes.object,
   };
+
+  return Button;
 }
 
 export const First = createButton('First', '«');

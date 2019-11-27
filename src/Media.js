@@ -1,9 +1,8 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import createWithBsPrefix from './createWithBsPrefix';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
@@ -11,13 +10,22 @@ const propTypes = {
    */
   bsPrefix: PropTypes.string,
 
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
+
   as: PropTypes.elementType,
 };
 
 const Media = React.forwardRef(
   // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  ({ bsPrefix, className, as: Component = 'div', ...props }, ref) => {
+  (
+    { bsPrefix, className, classNameMap, as: Component = 'div', ...props },
+    ref,
+  ) => {
     const prefix = useBootstrapPrefix(bsPrefix, 'media');
+    const classNames = useClassNameMapper(classNameMap);
 
     return (
       <Component

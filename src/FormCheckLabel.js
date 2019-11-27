@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import FormContext from './FormContext';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'form-check-input'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * A seperate bsPrefix used for custom controls
@@ -22,11 +26,15 @@ const propTypes = {
 };
 
 const FormCheckLabel = React.forwardRef(
-  ({ bsPrefix, bsCustomPrefix, className, htmlFor, ...props }, ref) => {
+  (
+    { bsPrefix, bsCustomPrefix, classNameMap, className, htmlFor, ...props },
+    ref,
+  ) => {
     const { controlId, custom } = useContext(FormContext);
     bsPrefix = custom
       ? useBootstrapPrefix(bsCustomPrefix, 'custom-control-label')
       : useBootstrapPrefix(bsPrefix, 'form-check-label');
+    const classNames = useClassNameMapper(classNameMap);
 
     return (
       <label // eslint-disable-line jsx-a11y/label-has-associated-control

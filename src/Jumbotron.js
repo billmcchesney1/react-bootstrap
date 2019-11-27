@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   as: PropTypes.elementType,
@@ -10,6 +9,11 @@ const propTypes = {
   fluid: PropTypes.bool,
   /** @default 'jumbotron' */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 };
 
 const defaultProps = {
@@ -24,11 +28,13 @@ const Jumbotron = React.forwardRef(
       className,
       fluid,
       bsPrefix,
+      classNameMap,
       ...props
     },
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'jumbotron');
+    const classNames = useClassNameMapper(classNameMap);
     const classes = {
       [bsPrefix]: true,
       [`${bsPrefix}-fluid`]: fluid,

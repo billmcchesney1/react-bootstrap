@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useEventCallback from '@restart/hooks/useEventCallback';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import CloseButton from './CloseButton';
 import ToastContext from './ToastContext';
 
 const propTypes = {
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Provides an accessible label for the close
@@ -30,10 +34,19 @@ const defaultProps = {
 
 const ToastHeader = React.forwardRef(
   (
-    { bsPrefix, closeLabel, closeButton, className, children, ...props },
+    {
+      bsPrefix,
+      closeLabel,
+      closeButton,
+      className,
+      classNameMap,
+      children,
+      ...props
+    },
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'toast-header');
+    const classNames = useClassNameMapper(classNameMap);
 
     const context = useContext(ToastContext);
 
@@ -51,7 +64,7 @@ const ToastHeader = React.forwardRef(
           <CloseButton
             label={closeLabel}
             onClick={handleClick}
-            className="ml-2 mb-1"
+            className={classNames('ml-2 mb-1')}
             data-dismiss="toast"
           />
         )}

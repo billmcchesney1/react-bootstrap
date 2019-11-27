@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
 import useTimeout from '@restart/hooks/useTimeout';
 import Fade from './Fade';
 import Header from './ToastHeader';
 import Body from './ToastBody';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import ToastContext from './ToastContext';
 
 const propTypes = {
@@ -14,6 +13,11 @@ const propTypes = {
    * @default 'toast'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Apply a CSS fade transition to the toast
@@ -58,6 +62,7 @@ const Toast = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       className,
       children,
       transition: Transition,
@@ -71,6 +76,7 @@ const Toast = React.forwardRef(
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix('toast');
+    const classNames = useClassNameMapper(classNameMap);
     const delayRef = useRef(delay);
     const onCloseRef = useRef(onClose);
 

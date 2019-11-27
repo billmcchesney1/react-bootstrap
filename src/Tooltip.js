@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 import isRequiredForA11y from 'prop-types-extra/lib/isRequiredForA11y';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'tooltip'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * An html id attribute, necessary for accessibility
@@ -69,6 +73,7 @@ const Tooltip = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       placement,
       className,
       style,
@@ -81,6 +86,7 @@ const Tooltip = React.forwardRef(
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'tooltip');
+    const classNames = useClassNameMapper(classNameMap);
 
     return (
       <div
@@ -91,8 +97,8 @@ const Tooltip = React.forwardRef(
         className={classNames(className, bsPrefix, `bs-tooltip-${placement}`)}
         {...props}
       >
-        <div className="arrow" {...arrowProps} />
-        <div className={`${bsPrefix}-inner`}>{children}</div>
+        <div className={classNames('arrow')} {...arrowProps} />
+        <div className={classNames(`${bsPrefix}-inner`)}>{children}</div>
       </div>
     );
   },

@@ -1,7 +1,6 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /** Set a custom element for this component */
@@ -9,6 +8,11 @@ const propTypes = {
 
   /** @default 'popover-body' */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 };
 
 const PopoverContent = React.forwardRef(
@@ -19,11 +23,13 @@ const PopoverContent = React.forwardRef(
       bsPrefix,
       className,
       children,
+      classNameMap,
       ...props
     },
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'popover-body');
+    const classNames = useClassNameMapper(classNameMap);
 
     return (
       <Component

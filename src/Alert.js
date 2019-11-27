@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { elementType } from 'prop-types-extra';
@@ -7,7 +6,7 @@ import useEventCallback from '@restart/hooks/useEventCallback';
 
 import createWithBsPrefix from './createWithBsPrefix';
 import divWithClassName from './divWithClassName';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import Fade from './Fade';
 import CloseButton from './CloseButton';
 import SafeAnchor from './SafeAnchor';
@@ -17,6 +16,11 @@ const propTypes = {
    * @default 'alert'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * The Alert visual variant
@@ -67,6 +71,7 @@ const controllables = {
 const Alert = React.forwardRef((uncontrolledProps, ref) => {
   const {
     bsPrefix,
+    classNameMap,
     show,
     closeLabel,
     className,
@@ -82,6 +87,7 @@ const Alert = React.forwardRef((uncontrolledProps, ref) => {
   const handleClose = useEventCallback(e => {
     onClose(false, e);
   });
+  const classNames = useClassNameMapper(classNameMap);
 
   const alert = (
     <div

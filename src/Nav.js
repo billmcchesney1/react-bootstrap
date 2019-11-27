@@ -1,11 +1,10 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import all from 'prop-types-extra/lib/all';
 import React, { useContext } from 'react';
 import { useUncontrolled } from 'uncontrollable';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import NavbarContext from './NavbarContext';
 import CardContext from './CardContext';
 import AbstractNav from './AbstractNav';
@@ -17,6 +16,11 @@ const propTypes = {
    * @default 'nav'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /** @private */
   navbarBsPrefix: PropTypes.string,
@@ -94,6 +98,7 @@ const Nav = React.forwardRef((uncontrolledProps, ref) => {
   let {
     as = 'div',
     bsPrefix,
+    classNameMap,
     variant,
     fill,
     justify,
@@ -105,6 +110,7 @@ const Nav = React.forwardRef((uncontrolledProps, ref) => {
   } = useUncontrolled(uncontrolledProps, { activeKey: 'onSelect' });
 
   bsPrefix = useBootstrapPrefix(bsPrefix, 'nav');
+  const classNames = useClassNameMapper(classNameMap);
 
   let navbarBsPrefix, cardHeaderBsPrefix;
 

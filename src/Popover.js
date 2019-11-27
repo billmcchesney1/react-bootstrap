@@ -1,8 +1,7 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 import isRequiredForA11y from 'prop-types-extra/lib/isRequiredForA11y';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import PopoverTitle from './PopoverTitle';
 import PopoverContent from './PopoverContent';
 
@@ -11,6 +10,11 @@ const propTypes = {
    * @default 'popover'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * An html id attribute, necessary for accessibility
@@ -58,6 +62,7 @@ const Popover = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       placement,
       className,
       style,
@@ -71,6 +76,7 @@ const Popover = React.forwardRef(
     ref,
   ) => {
     const decoratedBsPrefix = useBootstrapPrefix(bsPrefix, 'popover');
+    const classNames = useClassNameMapper(classNameMap);
     return (
       <div
         ref={ref}
@@ -84,7 +90,7 @@ const Popover = React.forwardRef(
         )}
         {...props}
       >
-        <div className="arrow" {...arrowProps} />
+        <div className={classNames('arrow')} {...arrowProps} />
         {content ? <PopoverContent>{children}</PopoverContent> : children}
       </div>
     );

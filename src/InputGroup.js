@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import React from 'react';
 
 import createWithBsPrefix from './createWithBsPrefix';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /** @default 'input-group' */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Control the size of buttons and form elements from the top-level .
@@ -32,6 +36,7 @@ const InputGroup = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       size,
       className,
       // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
@@ -41,6 +46,7 @@ const InputGroup = React.forwardRef(
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'input-group');
+    const classNames = useClassNameMapper(classNameMap);
 
     return (
       <Component

@@ -1,14 +1,18 @@
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import React from 'react';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'spinner'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * The visual color style of the spinner
@@ -52,6 +56,7 @@ const Spinner = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       variant,
       animation,
       size,
@@ -64,6 +69,7 @@ const Spinner = React.forwardRef(
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'spinner');
+    const classNames = useClassNameMapper(classNameMap);
     const bsSpinnerPrefix = `${bsPrefix}-${animation}`;
 
     return (

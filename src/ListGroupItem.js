@@ -1,16 +1,20 @@
-import classNames from 'classnames';
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import AbstractNavItem from './AbstractNavItem';
 import { makeEventKey } from './SelectableContext';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'list-group-item'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Sets contextual classes for list item
@@ -57,6 +61,7 @@ const ListGroupItem = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       active,
       disabled,
       className,
@@ -70,6 +75,7 @@ const ListGroupItem = React.forwardRef(
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'list-group-item');
+    const classNames = useClassNameMapper(classNameMap);
 
     const handleClick = useCallback(
       event => {
@@ -90,7 +96,7 @@ const ListGroupItem = React.forwardRef(
         {...props}
         eventKey={makeEventKey(eventKey, props.href)}
         // eslint-disable-next-line
-      as={as || (action ? (props.href ? 'a' : 'button') : 'div')}
+        as={as || (action ? (props.href ? 'a' : 'button') : 'div')}
         onClick={handleClick}
         className={classNames(
           className,

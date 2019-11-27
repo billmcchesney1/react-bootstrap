@@ -1,12 +1,16 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /** @default 'navbar' */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * An href, when provided the Brand will render as an `<a>` element (unless `as` is provided).
@@ -20,8 +24,9 @@ const propTypes = {
 };
 
 const NavbarBrand = React.forwardRef(
-  ({ bsPrefix, className, as, ...props }, ref) => {
+  ({ bsPrefix, classNameMap, className, as, ...props }, ref) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'navbar-brand');
+    const classNames = useClassNameMapper(classNameMap);
 
     const Component = as || (props.href ? 'a' : 'span');
 

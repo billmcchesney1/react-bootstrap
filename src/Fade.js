@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import transitionEnd from 'dom-helpers/transitionEnd';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
@@ -7,8 +6,14 @@ import Transition, {
   ENTERING,
 } from 'react-transition-group/Transition';
 import triggerBrowserReflow from './triggerBrowserReflow';
+import { useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
+
   /**
    * Show the component; triggers the fade in or fade out animation
    */
@@ -76,36 +81,40 @@ const fadeStyles = {
   [ENTERED]: 'show',
 };
 
-const Fade = React.forwardRef(({ className, children, ...props }, ref) => {
-  const handleEnter = useCallback(
-    node => {
-      triggerBrowserReflow(node);
-      if (props.onEnter) props.onEnter(node);
-    },
-    [props],
-  );
+const Fade = React.forwardRef(
+  ({ className, children, classNameMap, ...props }, ref) => {
+    const handleEnter = useCallback(
+      node => {
+        triggerBrowserReflow(node);
+        if (props.onEnter) props.onEnter(node);
+      },
+      [props],
+    );
 
-  return (
-    <Transition
-      ref={ref}
-      addEndListener={transitionEnd}
-      {...props}
-      onEnter={handleEnter}
-    >
-      {(status, innerProps) =>
-        React.cloneElement(children, {
-          ...innerProps,
-          className: classNames(
-            'fade',
-            className,
-            children.props.className,
-            fadeStyles[status],
-          ),
-        })
-      }
-    </Transition>
-  );
-});
+    const classNames = useClassNameMapper(classNameMap);
+
+    return (
+      <Transition
+        ref={ref}
+        addEndListener={transitionEnd}
+        {...props}
+        onEnter={handleEnter}
+      >
+        {(status, innerProps) =>
+          React.cloneElement(children, {
+            ...innerProps,
+            className: classNames(
+              'fade',
+              className,
+              children.props.className,
+              fadeStyles[status],
+            ),
+          })
+        }
+      </Transition>
+    );
+  },
+);
 
 Fade.propTypes = propTypes;
 Fade.defaultProps = defaultProps;

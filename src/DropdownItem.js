@@ -1,16 +1,20 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useEventCallback from '@restart/hooks/useEventCallback';
 
 import SafeAnchor from './SafeAnchor';
 import SelectableContext, { makeEventKey } from './SelectableContext';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import NavContext from './NavContext';
 
 const propTypes = {
   /** @default 'dropdown' */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Highlight the menu item as active.
@@ -58,6 +62,7 @@ const DropdownItem = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       className,
       children,
       eventKey,
@@ -72,6 +77,7 @@ const DropdownItem = React.forwardRef(
     ref,
   ) => {
     const prefix = useBootstrapPrefix(bsPrefix, 'dropdown-item');
+    const classNames = useClassNameMapper(classNameMap);
     const onSelectCtx = useContext(SelectableContext);
     const navContext = useContext(NavContext);
 

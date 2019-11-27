@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'card-img'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Defines image position inside
@@ -27,8 +31,19 @@ const defaultProps = {
 
 const CardImg = React.forwardRef(
   // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  ({ bsPrefix, className, variant, as: Component = 'img', ...props }, ref) => {
+  (
+    {
+      bsPrefix,
+      classNameMap,
+      className,
+      variant,
+      as: Component = 'img',
+      ...props
+    },
+    ref,
+  ) => {
     const prefix = useBootstrapPrefix(bsPrefix, 'card-img');
+    const classNames = useClassNameMapper(classNameMap);
 
     return (
       <Component

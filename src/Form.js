@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import FormCheck from './FormCheck';
@@ -7,7 +6,7 @@ import FormGroup from './FormGroup';
 import FormLabel from './FormLabel';
 import FormText from './FormText';
 import Switch from './Switch';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import createWithBsPrefix from './createWithBsPrefix';
 
 const propTypes = {
@@ -15,6 +14,11 @@ const propTypes = {
    * @default {'form'}
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * The Form `ref` will be forwarded to the underlying element,
@@ -48,6 +52,7 @@ const Form = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       inline,
       className,
       validated,
@@ -58,6 +63,7 @@ const Form = React.forwardRef(
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'form');
+    const classNames = useClassNameMapper(classNameMap);
     return (
       <Component
         {...props}

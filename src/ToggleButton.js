@@ -1,12 +1,17 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useState, useCallback } from 'react';
+import { useClassNameMapper } from './ThemeProvider';
 
 import Button from './Button';
 
 const noop = () => {};
 
 const propTypes = {
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
+
   /**
    * The `<input>` element `type`
    */
@@ -50,6 +55,7 @@ const propTypes = {
 const ToggleButton = React.forwardRef(
   (
     {
+      classNameMap,
       children,
       name,
       className,
@@ -64,6 +70,7 @@ const ToggleButton = React.forwardRef(
     ref,
   ) => {
     const [focused, setFocused] = useState(false);
+    const classNames = useClassNameMapper(classNameMap);
 
     const handleFocus = useCallback(e => {
       if (e.target.tagName === 'INPUT') setFocused(true);

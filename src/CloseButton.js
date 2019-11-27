@@ -1,8 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import classNames from 'classnames';
+import { useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
   label: PropTypes.string.isRequired,
   onClick: PropTypes.func,
 };
@@ -12,18 +16,21 @@ const defaultProps = {
 };
 
 const CloseButton = React.forwardRef(
-  ({ label, onClick, className, ...props }, ref) => (
-    <button
-      ref={ref}
-      type="button"
-      className={classNames('close', className)}
-      onClick={onClick}
-      {...props}
-    >
-      <span aria-hidden="true">&times;</span>
-      <span className="sr-only">{label}</span>
-    </button>
-  ),
+  ({ classNameMap, label, onClick, className, ...props }, ref) => {
+    const classNames = useClassNameMapper(classNameMap);
+    return (
+      <button
+        ref={ref}
+        type="button"
+        className={classNames('close', className)}
+        onClick={onClick}
+        {...props}
+      >
+        <span aria-hidden="true">&times;</span>
+        <span className={classNames('sr-only')}>{label}</span>
+      </button>
+    );
+  },
 );
 
 CloseButton.displayName = 'CloseButton';

@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'container'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Allow the Container to fill all of its available horizontal space.
@@ -26,8 +30,19 @@ const defaultProps = {
 
 const Container = React.forwardRef(
   // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  ({ bsPrefix, fluid, as: Component = 'div', className, ...props }, ref) => {
+  (
+    {
+      bsPrefix,
+      classNameMap,
+      fluid,
+      as: Component = 'div',
+      className,
+      ...props
+    },
+    ref,
+  ) => {
     const prefix = useBootstrapPrefix(bsPrefix, 'container');
+    const classNames = useClassNameMapper(classNameMap);
     return (
       <Component
         ref={ref}

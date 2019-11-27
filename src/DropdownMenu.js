@@ -1,10 +1,9 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useDropdownMenu } from 'react-overlays/DropdownMenu';
 import useMergedRefs from '@restart/hooks/useMergedRefs';
 import NavbarContext from './NavbarContext';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import useWrappedRefWithWarning from './useWrappedRefWithWarning';
 
 const propTypes = {
@@ -12,6 +11,11 @@ const propTypes = {
    * @default 'dropdown-menu'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /** Controls the visibility of the Dropdown menu  */
   show: PropTypes.bool,
@@ -57,6 +61,7 @@ const DropdownMenu = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       className,
       alignRight,
       rootCloseEvent,
@@ -71,6 +76,7 @@ const DropdownMenu = React.forwardRef(
   ) => {
     const isNavbar = useContext(NavbarContext);
     const prefix = useBootstrapPrefix(bsPrefix, 'dropdown-menu');
+    const classNames = useClassNameMapper(classNameMap);
     const {
       hasShown,
       placement,

@@ -1,17 +1,21 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import React from 'react';
 
 import SafeAnchor from './SafeAnchor';
 import AbstractNavItem from './AbstractNavItem';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'nav-link'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * The active state of the NavItem item.
@@ -57,10 +61,21 @@ const defaultProps = {
 
 const NavLink = React.forwardRef(
   (
-    { bsPrefix, disabled, className, href, eventKey, onSelect, as, ...props },
+    {
+      bsPrefix,
+      classNameMap,
+      disabled,
+      className,
+      href,
+      eventKey,
+      onSelect,
+      as,
+      ...props
+    },
     ref,
   ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'nav-link');
+    const classNames = useClassNameMapper(classNameMap);
     return (
       <AbstractNavItem
         {...props}

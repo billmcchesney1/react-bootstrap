@@ -1,23 +1,58 @@
 import PropTypes from 'prop-types';
 import forwardRef from '@restart/context/forwardRef';
 import React, { useContext, useMemo } from 'react';
+import classNames from 'classnames/bind';
 
-const ThemeContext = React.createContext({});
+function buildClassNameMapper(globalClassNameMap, localClassNameMap) {
+  return classNames.bind({
+    ...globalClassNameMap,
+    ...localClassNameMap,
+  });
+}
+
+const ThemeContext = React.createContext({
+  prefixes: {},
+  classNameMap: {},
+  createClassNameMapper: localClassNameMap =>
+    buildClassNameMapper({}, localClassNameMap),
+});
 const { Consumer, Provider } = ThemeContext;
 
-function ThemeProvider({ prefixes, children }) {
+function ThemeProvider({ prefixes, classNameMap, children }) {
   const copiedPrefixes = useMemo(() => ({ ...prefixes }), [prefixes]);
+  const globalClassNameMap = useMemo(() => ({ ...classNameMap }), [
+    classNameMap,
+  ]);
 
-  return <Provider value={copiedPrefixes}>{children}</Provider>;
+  const createClassNameMapper = localClassNameMap =>
+    buildClassNameMapper(globalClassNameMap, localClassNameMap);
+
+  return (
+    <Provider
+      value={{
+        prefixes: copiedPrefixes,
+        classNameMap: globalClassNameMap,
+        createClassNameMapper,
+      }}
+    >
+      {children}
+    </Provider>
+  );
 }
 
 ThemeProvider.propTypes = {
   prefixes: PropTypes.object.isRequired,
+  classNameMap: PropTypes.object,
 };
 
 export function useBootstrapPrefix(prefix, defaultPrefix) {
-  const prefixes = useContext(ThemeContext);
+  const { prefixes } = useContext(ThemeContext);
   return prefix || prefixes[defaultPrefix] || defaultPrefix;
+}
+
+export function useClassNameMapper(localClassNameMap) {
+  const { createClassNameMapper } = useContext(ThemeContext);
+  return createClassNameMapper(localClassNameMap);
 }
 
 function createBootstrapComponent(Component, opts) {
@@ -31,7 +66,10 @@ function createBootstrapComponent(Component, opts) {
       props[forwardRefAs] = ref;
       // eslint-disable-next-line react/prop-types
       const bsPrefix = useBootstrapPrefix(props.bsPrefix, prefix);
-      return <Component {...props} bsPrefix={bsPrefix} />;
+      const { classNameMap } = useContext(ThemeContext);
+      return (
+        <Component {...props} bsPrefix={bsPrefix} classNameMap={classNameMap} />
+      );
     },
     { displayName: `Bootstrap(${Component.displayName || Component.name})` },
   );

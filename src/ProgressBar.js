@@ -1,8 +1,7 @@
-import classNames from 'classnames';
 import React, { cloneElement } from 'react';
 import PropTypes from 'prop-types';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 import { map } from './ElementChildren';
 
@@ -89,6 +88,11 @@ const propTypes = {
   bsPrefix: PropTypes.string,
 
   /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
+
+  /**
    * Sets the background class of the progress bar.
    *
    * @type ('success'|'danger'|'warning'|'info')
@@ -135,6 +139,7 @@ function renderProgressBar(
     bsPrefix,
     ...props
   },
+  classNames,
   ref,
 ) {
   return (
@@ -152,7 +157,7 @@ function renderProgressBar(
       aria-valuemin={min}
       aria-valuemax={max}
     >
-      {srOnly ? <span className="sr-only">{label}</span> : label}
+      {srOnly ? <span className={classNames('sr-only')}>{label}</span> : label}
     </div>
   );
 }
@@ -161,9 +166,9 @@ renderProgressBar.propTypes = propTypes;
 
 const ProgressBar = React.forwardRef(({ isChild, ...props }, ref) => {
   props.bsPrefix = useBootstrapPrefix(props.bsPrefix, 'progress');
-
+  const classNames = useClassNameMapper(props.classNameMap);
   if (isChild) {
-    return renderProgressBar(props, ref);
+    return renderProgressBar(props, ref, classNames);
   }
 
   const {
@@ -201,6 +206,7 @@ const ProgressBar = React.forwardRef(({ isChild, ...props }, ref) => {
               bsPrefix,
               variant,
             },
+            classNames,
             ref,
           )}
     </div>

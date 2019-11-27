@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'embed-responsive'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * This component requires a single child element
@@ -26,8 +30,12 @@ const defaultProps = {
 };
 
 const ResponsiveEmbed = React.forwardRef(
-  ({ bsPrefix, className, children, aspectRatio, ...props }, ref) => {
+  (
+    { bsPrefix, classNameMap, className, children, aspectRatio, ...props },
+    ref,
+  ) => {
     const decoratedBsPrefix = useBootstrapPrefix(bsPrefix, 'embed-responsive');
+    const classNames = useClassNameMapper(classNameMap);
     const child = React.Children.only(children);
     return (
       <div

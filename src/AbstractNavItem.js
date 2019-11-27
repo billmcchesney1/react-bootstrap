@@ -1,7 +1,7 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useEventCallback from '@restart/hooks/useEventCallback';
+import { useClassNameMapper } from './ThemeProvider';
 
 import NavContext from './NavContext';
 import SelectableContext, { makeEventKey } from './SelectableContext';
@@ -9,6 +9,11 @@ import SelectableContext, { makeEventKey } from './SelectableContext';
 const propTypes = {
   active: PropTypes.bool,
   role: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   href: PropTypes.string,
   tabIndex: PropTypes.string,
@@ -29,6 +34,7 @@ const AbstractNavItem = React.forwardRef(
     {
       active,
       className,
+      classNameMap,
       tabIndex,
       eventKey,
       onSelect,
@@ -41,6 +47,7 @@ const AbstractNavItem = React.forwardRef(
     const navKey = makeEventKey(eventKey, props.href);
     const parentOnSelect = useContext(SelectableContext);
     const navContext = useContext(NavContext);
+    const classNames = useClassNameMapper(classNameMap);
 
     let isActive = active;
     if (navContext) {

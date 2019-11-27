@@ -1,11 +1,10 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 import warning from 'warning';
 
 import { useUncontrolled } from 'uncontrollable';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import AbstractNav from './AbstractNav';
 import ListGroupItem from './ListGroupItem';
 
@@ -14,6 +13,11 @@ const propTypes = {
    * @default 'list-group'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Adds a variant to the list-group
@@ -46,6 +50,7 @@ const ListGroup = React.forwardRef((props, ref) => {
   let {
     className,
     bsPrefix,
+    classNameMap,
     variant,
     horizontal,
     // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
@@ -56,6 +61,7 @@ const ListGroup = React.forwardRef((props, ref) => {
   });
 
   bsPrefix = useBootstrapPrefix(bsPrefix, 'list-group');
+  const classNames = useClassNameMapper(classNameMap);
 
   let horizontalVariant;
   if (horizontal) {

@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import addEventListener from 'dom-helpers/addEventListener';
 import canUseDOM from 'dom-helpers/canUseDOM';
 import ownerDocument from 'dom-helpers/ownerDocument';
@@ -15,13 +14,18 @@ import ModalDialog from './ModalDialog';
 import Footer from './ModalFooter';
 import Header from './ModalHeader';
 import Title from './ModalTitle';
-import { createBootstrapComponent } from './ThemeProvider';
+import { createBootstrapComponent, ThemeConsumer } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'modal'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Render a large, extra large or small modal.
@@ -271,24 +275,27 @@ class Modal extends React.Component {
     });
   }
 
-  renderBackdrop = props => {
-    const { bsPrefix, backdropClassName, animation } = this.props;
+  renderBackdrop = classNames => {
+    return props => {
+      const { bsPrefix, backdropClassName, animation } = this.props;
 
-    return (
-      <div
-        {...props}
-        className={classNames(
-          `${bsPrefix}-backdrop`,
-          backdropClassName,
-          !animation && 'show',
-        )}
-      />
-    );
+      return (
+        <div
+          {...props}
+          className={classNames(
+            `${bsPrefix}-backdrop`,
+            backdropClassName,
+            !animation && 'show',
+          )}
+        />
+      );
+    };
   };
 
   render() {
     const {
       bsPrefix,
+      classNameMap,
       className,
       style,
       dialogClassName,
@@ -329,46 +336,55 @@ class Modal extends React.Component {
     if (!animation) baseModalStyle.display = 'block';
 
     return (
-      <ModalContext.Provider value={this.modalContext}>
-        <BaseModal
-          {...{
-            show,
-            backdrop,
-            container,
-            keyboard,
-            autoFocus,
-            enforceFocus,
-            restoreFocus,
-            onEscapeKeyDown,
-            onShow,
-            onHide,
-            onEntered,
-            onExit,
-            onExiting,
-            manager,
-            ref: this.setModalRef,
-            style: baseModalStyle,
-            className: classNames(className, bsPrefix),
-            containerClassName: `${bsPrefix}-open`,
-            transition: animation ? DialogTransition : undefined,
-            backdropTransition: animation ? BackdropTransition : undefined,
-            renderBackdrop: this.renderBackdrop,
-            onClick: clickHandler,
-            onMouseUp: this.handleMouseUp,
-            onEnter: this.handleEnter,
-            onEntering: this.handleEntering,
-            onExited: this.handleExited,
-          }}
-        >
-          <Dialog
-            {...props}
-            onMouseDown={this.handleDialogMouseDown}
-            className={dialogClassName}
-          >
-            {children}
-          </Dialog>
-        </BaseModal>
-      </ModalContext.Provider>
+      <ThemeConsumer>
+        {({ createClassNameMapper }) => {
+          const classNames = createClassNameMapper(classNameMap);
+          return (
+            <ModalContext.Provider value={this.modalContext}>
+              <BaseModal
+                {...{
+                  show,
+                  backdrop,
+                  container,
+                  keyboard,
+                  autoFocus,
+                  enforceFocus,
+                  restoreFocus,
+                  onEscapeKeyDown,
+                  onShow,
+                  onHide,
+                  onEntered,
+                  onExit,
+                  onExiting,
+                  manager,
+                  ref: this.setModalRef,
+                  style: baseModalStyle,
+                  className: classNames(className, bsPrefix),
+                  containerClassName: classNames(`${bsPrefix}-open`),
+                  transition: animation ? DialogTransition : undefined,
+                  backdropTransition: animation
+                    ? BackdropTransition
+                    : undefined,
+                  renderBackdrop: this.renderBackdrop(classNames),
+                  onClick: clickHandler,
+                  onMouseUp: this.handleMouseUp,
+                  onEnter: this.handleEnter,
+                  onEntering: this.handleEntering,
+                  onExited: this.handleExited,
+                }}
+              >
+                <Dialog
+                  {...props}
+                  onMouseDown={this.handleDialogMouseDown}
+                  className={classNames(dialogClassName, Dialog)}
+                >
+                  {children}
+                </Dialog>
+              </BaseModal>
+            </ModalContext.Provider>
+          );
+        }}
+      </ThemeConsumer>
     );
   }
 }

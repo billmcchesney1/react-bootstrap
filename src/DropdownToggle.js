@@ -1,11 +1,10 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import isRequiredForA11y from 'prop-types-extra/lib/isRequiredForA11y';
 import React from 'react';
 import { useDropdownToggle } from 'react-overlays/DropdownToggle';
 import useMergedRefs from '@restart/hooks/useMergedRefs';
 import Button from './Button';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import useWrappedRefWithWarning from './useWrappedRefWithWarning';
 
 const propTypes = {
@@ -13,6 +12,11 @@ const propTypes = {
    * @default 'dropdown-toggle'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * An html id attribute, necessary for assistive technologies, such as screen readers.
@@ -36,6 +40,7 @@ const DropdownToggle = React.forwardRef(
   (
     {
       bsPrefix,
+      classNameMap,
       split,
       className,
       children,
@@ -47,6 +52,7 @@ const DropdownToggle = React.forwardRef(
     ref,
   ) => {
     const prefix = useBootstrapPrefix(bsPrefix, 'dropdown-toggle');
+    const classNames = useClassNameMapper(classNameMap);
 
     if (childBsPrefix !== undefined) {
       props.bsPrefix = childBsPrefix;

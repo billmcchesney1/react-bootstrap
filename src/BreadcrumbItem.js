@@ -1,15 +1,18 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import SafeAnchor from './SafeAnchor';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'breadcrumb-item'
    */
   bsPrefix: PropTypes.string,
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
   /**
    * Adds a visual "active" state to a Breadcrumb
    * Item and disables the link.
@@ -37,8 +40,19 @@ const defaultProps = {
 
 const BreadcrumbItem = React.forwardRef(
   // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  ({ bsPrefix, active, className, as: Component = 'li', ...props }, ref) => {
+  (
+    {
+      bsPrefix,
+      classNameMap,
+      active,
+      className,
+      as: Component = 'li',
+      ...props
+    },
+    ref,
+  ) => {
     const prefix = useBootstrapPrefix(bsPrefix, 'breadcrumb-item');
+    const classNames = useClassNameMapper(classNameMap);
 
     const { href, title, target, ...elementProps } = props;
     const linkProps = { href, title, target };

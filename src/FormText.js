@@ -1,13 +1,17 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import React from 'react';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /** @default 'form-text' */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * The FormText `ref` will be forwarded to the underlying element.
@@ -29,8 +33,19 @@ const propTypes = {
 
 const FormText = React.forwardRef(
   // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  ({ bsPrefix, className, as: Component = 'small', muted, ...props }, ref) => {
+  (
+    {
+      bsPrefix,
+      classNameMap,
+      className,
+      as: Component = 'small',
+      muted,
+      ...props
+    },
+    ref,
+  ) => {
     bsPrefix = useBootstrapPrefix(bsPrefix, 'form-text');
+    const classNames = useClassNameMapper(classNameMap);
 
     return (
       <Component

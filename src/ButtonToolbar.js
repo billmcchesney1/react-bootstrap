@@ -1,14 +1,18 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
    * @default 'btn-toolbar'
    */
   bsPrefix: PropTypes.string,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * The ARIA role describing the button toolbar. Generally the default
@@ -23,8 +27,9 @@ const defaultProps = {
 };
 
 const ButtonToolbar = React.forwardRef(
-  ({ bsPrefix, className, ...props }, ref) => {
+  ({ bsPrefix, classNameMap, className, ...props }, ref) => {
     const prefix = useBootstrapPrefix(bsPrefix, 'btn-toolbar');
+    const classNames = useClassNameMapper(classNameMap);
 
     return (
       <div {...props} ref={ref} className={classNames(className, prefix)} />

@@ -12,6 +12,7 @@ import TabContent from './TabContent';
 import TabPane from './TabPane';
 
 import { forEach, map } from './ElementChildren';
+import { useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
   /**
@@ -20,6 +21,11 @@ const propTypes = {
    * @controllable onSelect
    */
   activeKey: PropTypes.any,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /**
    * Navigation style
@@ -91,26 +97,29 @@ function getDefaultActiveKey(children) {
   return defaultActiveKey;
 }
 
-function renderTab(child) {
-  const { title, eventKey, disabled, tabClassName } = child.props;
-  if (title == null) {
-    return null;
-  }
+function renderTab(classNames) {
+  return function renderTabWithClass(child) {
+    const { title, eventKey, disabled, tabClassName } = child.props;
+    if (title == null) {
+      return null;
+    }
 
-  return (
-    <NavItem
-      as={NavLink}
-      eventKey={eventKey}
-      disabled={disabled}
-      className={tabClassName}
-    >
-      {title}
-    </NavItem>
-  );
+    return (
+      <NavItem
+        as={NavLink}
+        eventKey={eventKey}
+        disabled={disabled}
+        className={classNames(tabClassName)}
+      >
+        {title}
+      </NavItem>
+    );
+  };
 }
 
 const Tabs = React.forwardRef((props, ref) => {
   const {
+    classNameMap,
     id,
     onSelect,
     transition,
@@ -123,6 +132,8 @@ const Tabs = React.forwardRef((props, ref) => {
     activeKey: 'onSelect',
   });
 
+  const classNames = useClassNameMapper(classNameMap);
+
   return (
     <TabContainer
       ref={ref}
@@ -134,7 +145,7 @@ const Tabs = React.forwardRef((props, ref) => {
       unmountOnExit={unmountOnExit}
     >
       <Nav {...controlledProps} role="tablist" as="nav">
-        {map(children, renderTab)}
+        {map(children, renderTab(classNames))}
       </Nav>
 
       <TabContent>

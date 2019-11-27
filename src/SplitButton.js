@@ -4,8 +4,14 @@ import PropTypes from 'prop-types';
 import Button from './Button';
 import ButtonGroup from './ButtonGroup';
 import Dropdown from './Dropdown';
+import { useClassNameMapper } from './ThemeProvider';
 
 const propTypes = {
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
+
   /**
    * An html id attribute for the Toggle button, necessary for assistive technologies, such as screen readers.
    * @type {string|number}
@@ -59,6 +65,7 @@ const SplitButton = React.forwardRef(
     {
       id,
       bsPrefix,
+      classNameMap,
       size,
       variant,
       title,
@@ -93,7 +100,9 @@ const SplitButton = React.forwardRef(
         disabled={props.disabled}
         childBsPrefix={bsPrefix}
       >
-        <span className="sr-only">{toggleLabel}</span>
+        <span className={useClassNameMapper(classNameMap)('sr-only')}>
+          {toggleLabel}
+        </span>
       </Dropdown.Toggle>
 
       <Dropdown.Menu role={menuRole} rootCloseEvent={rootCloseEvent}>

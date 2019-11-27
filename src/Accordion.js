@@ -1,8 +1,7 @@
-import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useUncontrolled } from 'uncontrollable';
-import { useBootstrapPrefix } from './ThemeProvider';
+import { useBootstrapPrefix, useClassNameMapper } from './ThemeProvider';
 import AccordionToggle from './AccordionToggle';
 import SelectableContext from './SelectableContext';
 import AccordionCollapse from './AccordionCollapse';
@@ -11,6 +10,11 @@ import AccordionContext from './AccordionContext';
 const propTypes = {
   /** Set a custom element for this component */
   as: PropTypes.elementType,
+
+  /**
+   * ClassName mapping
+   */
+  classNameMap: PropTypes.object,
 
   /** @default 'accordion' */
   bsPrefix: PropTypes.string,
@@ -30,6 +34,7 @@ const Accordion = React.forwardRef((props, ref) => {
     bsPrefix,
     children,
     className,
+    classNameMap,
     onSelect,
     ...controlledProps
   } = useUncontrolled(props, {
@@ -37,6 +42,7 @@ const Accordion = React.forwardRef((props, ref) => {
   });
 
   bsPrefix = useBootstrapPrefix(bsPrefix, 'accordion');
+  const classNames = useClassNameMapper(classNameMap);
 
   return (
     <AccordionContext.Provider value={activeKey}>
@@ -44,7 +50,7 @@ const Accordion = React.forwardRef((props, ref) => {
         <Component
           ref={ref}
           {...controlledProps}
-          className={classNames(className, bsPrefix)}
+          className={classNames(className, bsPrefix, 'test')}
         >
           {children}
         </Component>
