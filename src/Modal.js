@@ -100,6 +100,15 @@ const propTypes = {
   restoreFocus: PropTypes.bool,
 
   /**
+   * Options passed to focus function when `restoreFocus` is set to `true`
+   *
+   * @link  https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#Parameters
+   */
+  restoreFocusOptions: PropTypes.shape({
+    preventScroll: PropTypes.bool,
+  }),
+
+  /**
    * When `true` The modal will show itself.
    */
   show: PropTypes.bool,
@@ -315,6 +324,7 @@ class Modal extends React.Component {
       autoFocus,
       enforceFocus,
       restoreFocus,
+      restoreFocusOptions,
       onEntered,
       onExit,
       onExiting,
@@ -350,6 +360,7 @@ class Modal extends React.Component {
                   autoFocus,
                   enforceFocus,
                   restoreFocus,
+                  restoreFocusOptions,
                   onEscapeKeyDown,
                   onShow,
                   onHide,
