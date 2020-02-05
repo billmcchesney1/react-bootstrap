@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import styles from 'dom-helpers/css';
 import transitionEnd from 'dom-helpers/transitionEnd';
 import PropTypes from 'prop-types';
@@ -212,8 +211,8 @@ class Carousel extends React.Component {
 
         this.safeSetState(
           {
-            prevClasses: classNames('active', directionalClassName),
-            currentClasses: classNames(orderClassName, directionalClassName),
+            prevClasses: `active ${directionalClassName}`,
+            currentClasses: `${orderClassName} ${directionalClassName}`,
           },
           () =>
             transitionEnd(nextElement, () => {
@@ -392,7 +391,7 @@ class Carousel extends React.Component {
     }, 50);
   }
 
-  renderControls(properties, classNamesMapper) {
+  renderControls(properties, classNames) {
     const { bsPrefix } = this.props;
     const {
       wrap,
@@ -410,12 +409,12 @@ class Carousel extends React.Component {
       (wrap || activeIndex !== 0) && (
         <SafeAnchor
           key="prev"
-          className={classNamesMapper(`${bsPrefix}-control-prev`)}
+          className={classNames(`${bsPrefix}-control-prev`)}
           onClick={this.handlePrev}
         >
           {prevIcon}
           {prevLabel && (
-            <span className={classNamesMapper('sr-only')}>{prevLabel}</span>
+            <span className={classNames('sr-only')}>{prevLabel}</span>
           )}
         </SafeAnchor>
       ),
@@ -423,19 +422,19 @@ class Carousel extends React.Component {
       (wrap || activeIndex !== count - 1) && (
         <SafeAnchor
           key="next"
-          className={classNamesMapper(`${bsPrefix}-control-next`)}
+          className={classNames(`${bsPrefix}-control-next`)}
           onClick={this.handleNext}
         >
           {nextIcon}
           {nextLabel && (
-            <span className={classNamesMapper('sr-only')}>{nextLabel}</span>
+            <span className={classNames('sr-only')}>{nextLabel}</span>
           )}
         </SafeAnchor>
       ),
     ];
   }
 
-  renderIndicators(children, activeIndex, classNamesMapper) {
+  renderIndicators(children, activeIndex, classNames) {
     const { bsPrefix } = this.props;
     let indicators = [];
 
@@ -443,10 +442,7 @@ class Carousel extends React.Component {
       indicators.push(
         <li
           key={index}
-          className={classNamesMapper(
-            index === activeIndex ? 'active' : null,
-            'li',
-          )}
+          className={classNames(index === activeIndex ? 'active' : null, 'li')}
           onClick={e => this.to(index, e)}
         />,
 
@@ -457,9 +453,7 @@ class Carousel extends React.Component {
     });
 
     return (
-      <ol className={classNamesMapper(`${bsPrefix}-indicators`)}>
-        {indicators}
-      </ol>
+      <ol className={classNames(`${bsPrefix}-indicators`)}>{indicators}</ol>
     );
   }
 
@@ -500,18 +494,18 @@ class Carousel extends React.Component {
     return (
       <ThemeConsumer>
         {({ createClassNameMapper }) => {
-          const classNamesMapper = createClassNameMapper(classNameMap);
+          const classNames = createClassNameMapper(classNameMap);
           const prevIconComponent = prevIcon || (
             <span
               aria-hidden="true"
-              className={classNamesMapper('carousel-control-prev-icon', 'span')}
+              className={classNames('carousel-control-prev-icon', 'span')}
             />
           );
 
           const nextIconComponent = nextIcon || (
             <span
               aria-hidden="true"
-              className={classNamesMapper('carousel-control-next-icon', 'span')}
+              className={classNames('carousel-control-next-icon', 'span')}
             />
           );
 
@@ -521,7 +515,7 @@ class Carousel extends React.Component {
               onTouchStart={touch ? this.handleTouchStart : undefined}
               onTouchEnd={touch ? this.handleTouchEnd : undefined}
               {...props}
-              className={classNamesMapper(
+              className={classNames(
                 className,
                 bsPrefix,
                 slide && 'slide',
@@ -532,10 +526,10 @@ class Carousel extends React.Component {
               onMouseOut={this.handleMouseOut}
             >
               {indicators &&
-                this.renderIndicators(children, activeIndex, classNamesMapper)}
+                this.renderIndicators(children, activeIndex, classNames)}
 
               <div
-                className={classNamesMapper(`${bsPrefix}-inner`, 'div')}
+                className={classNames(`${bsPrefix}-inner`, 'div')}
                 ref={this.carousel}
               >
                 {map(children, (child, index) => {
@@ -543,7 +537,7 @@ class Carousel extends React.Component {
                   const previous = index === previousActiveIndex;
 
                   return cloneElement(child, {
-                    className: classNamesMapper(
+                    className: classNames(
                       child.props.className,
                       current && currentClasses,
                       previous && prevClasses,
@@ -563,7 +557,7 @@ class Carousel extends React.Component {
                     nextIcon: nextIconComponent,
                     nextLabel,
                   },
-                  classNamesMapper,
+                  classNames,
                 )}
             </Component>
           );

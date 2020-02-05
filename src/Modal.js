@@ -376,7 +376,7 @@ class Modal extends React.Component {
                 <Dialog
                   {...props}
                   onMouseDown={this.handleDialogMouseDown}
-                  className={classNames(dialogClassName, Dialog)}
+                  className={classNames(dialogClassName)}
                 >
                   {children}
                 </Dialog>

@@ -68,7 +68,7 @@ export TabContent from './TabContent';
 export Table from './Table';
 export TabPane from './TabPane';
 export Tabs from './Tabs';
-export ThemeProvider from './ThemeProvider';
+export ThemeProvider, { useClassNameMapper } from './ThemeProvider';
 export ToggleButton from './ToggleButton';
 export ToggleButtonGroup from './ToggleButtonGroup';
 export Tooltip from './Tooltip';

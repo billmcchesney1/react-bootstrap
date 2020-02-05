@@ -139,8 +139,8 @@ function renderProgressBar(
     bsPrefix,
     ...props
   },
-  classNames,
   ref,
+  classNames,
 ) {
   return (
     <div
@@ -206,8 +206,8 @@ const ProgressBar = React.forwardRef(({ isChild, ...props }, ref) => {
               bsPrefix,
               variant,
             },
-            classNames,
             ref,
+            classNames,
           )}
     </div>
   );
