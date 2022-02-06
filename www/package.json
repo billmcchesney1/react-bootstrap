@@ -39,7 +39,7 @@
     "@restart/context": "^2.1.4",
     "@restart/hooks": "^0.3.25",
     "ast-types": "^0.14.2",
-    "astroturf": "^0.10.5",
+    "astroturf": "^1.0.0",
     "bootstrap": "^4.5.3",
     "classnames": "^2.2.6",
     "common-tags": "^1.8.0",
